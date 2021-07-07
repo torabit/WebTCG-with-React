@@ -1,10 +1,11 @@
 import React,{ useEffect, useState } from 'react';
-import {useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState, useRecoilValue} from 'recoil';
 import yourHandState from '../State/yourHandState';
 import battleFieldState from '../State/battleFieldState';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import trashState from '../State/trashState';
+import phaseState from '../State/phaseState';
 
 const CardComands = (props) => {
     const [superTypeButtonText, setSuperTypeButtonText] = useState('');
@@ -12,26 +13,15 @@ const CardComands = (props) => {
     const [yourHand, setYourHand] = useRecoilState(yourHandState);
     const setTrash = useSetRecoilState(trashState);
     const setBattleField = useSetRecoilState(battleFieldState);
+    const phase = useRecoilValue(phaseState);
 
-    const callToBattleField = (index) => {
-        let yourhands = [...yourHand];
-        setBattleField(yourHand[index]);
-        yourhands.splice(index, 1);
-        setYourHand(yourhands);
-    };
+    let yourhands = [...yourHand];
 
-    const useSpellCard = (index) => {
-        let yourhands = [...yourHand];
-        const newCard = yourHand[index];
-        setTrash((prev) => [...prev, newCard]);
-        yourhands.splice(index, 1);
-        setYourHand(yourhands);
-    };
-
-    useEffect(() => {
-        switch (props.supertype) {
+    const whichSuperTypeFunc = (supertype) => {
+        switch (supertype) {
             case 0:
                 setSuperTypeButtonText('ポケモンにつける');
+                setTcgFunction(() => useEnergyCard);
                 break;
             case 1:
                 setSuperTypeButtonText('バトル場に出す');
@@ -44,7 +34,41 @@ const CardComands = (props) => {
             default:
                 console.log('nothing');
         }
-    },[]);
+    }
+
+    useEffect(() => {
+        whichSuperTypeFunc(props.supertype);
+    },[props.handleClick]);
+    
+    const resetYourHand = (index) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                yourhands.splice(index, 1);
+                setYourHand(yourhands);
+                resolve();
+            },);
+        });
+    }
+    
+    const callToBattleField = async (index) => {
+        setBattleField(yourhands[index]);
+        props.handleClose();
+        await resetYourHand(index);
+    }
+
+    const useSpellCard = async (index) => {
+        const newCard = yourhands[index];
+        setTrash((prev) => [...prev, newCard]);
+        props.handleClose();
+        await resetYourHand(index);
+    }
+
+    const useEnergyCard = async (index) => {
+        const newCard = yourhands[index];
+        setTrash((prev) => [...prev, newCard]);
+        props.handleClose();
+        await resetYourHand(index);
+    }
 
     return(
         <Menu
@@ -54,7 +78,9 @@ const CardComands = (props) => {
             open={Boolean(props.anchorEl)}
             onClose={props.handleClose}
         >
-            <MenuItem onClick={() => tcgFunction(props.index)}>{superTypeButtonText}</MenuItem>
+            {(phase === 0 && props.supertype !== 1) ||(
+                <MenuItem onClick={() => tcgFunction(props.index)}>{superTypeButtonText}</MenuItem>
+            )}
         </Menu>
     );
 }

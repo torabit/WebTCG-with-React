@@ -74,7 +74,8 @@ CREATE SEQUENCE DECK_ID_SEQ
     NO CYCLE
 ;
 
-INSERT INTO users VALUES ('master','114514','0');
+INSERT INTO users VALUES ('master', '114514', '0');
+INSERT INTO users VALUES ('guest', '114514', '0');
 
 -- pokemon_supertype 
 INSERT INTO pokemon_supertype VALUES ('0', 'Energy');

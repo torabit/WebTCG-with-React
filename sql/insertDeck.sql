@@ -23,6 +23,7 @@ INSERT INTO deck_cards VALUES ('1', 'S4a186', '2');
 INSERT INTO deck_cards VALUES ('1', 'SM11a059', '2');
 
 
+
 -- こくばバドレックスVMAXデッキ
 INSERT INTO deck VALUES ('master', nextval('DECK_ID_SEQ'), 'こくばバドレックスVMAXデッキ');
 
@@ -105,3 +106,28 @@ INSERT INTO deck_cards VALUES ('4', 'SGG018', '4');
 INSERT INTO deck_cards VALUES ('4', 'SF030', '4');
 INSERT INTO deck_cards VALUES ('4', 'S4a186', '2');
 INSERT INTO deck_cards VALUES ('4', 'S-P096', '2');
+
+-- ムゲンダイナVMAXデッキ
+
+INSERT INTO deck VALUES ('guest', nextval('DECK_ID_SEQ'), 'ムゲンダイナVMAXデッキ');
+
+INSERT INTO deck_cards VALUES ('5', 'S4a124', '4');
+INSERT INTO deck_cards VALUES ('5', 'S4a125', '3');
+INSERT INTO deck_cards VALUES ('5', 'S6a047', '4');
+INSERT INTO deck_cards VALUES ('5', 'S6a048', '3');
+INSERT INTO deck_cards VALUES ('5', 'S5a045', '2');
+INSERT INTO deck_cards VALUES ('5', 'SGI007', '4');
+INSERT INTO deck_cards VALUES ('5', 'S4a110', '2');
+INSERT INTO deck_cards VALUES ('5', 'SF008', '4');
+INSERT INTO deck_cards VALUES ('5', 'SF015', '4');
+INSERT INTO deck_cards VALUES ('5', 'SF014', '3');
+INSERT INTO deck_cards VALUES ('5', 'SD102', '2');
+INSERT INTO deck_cards VALUES ('5', 'SD085', '1');
+INSERT INTO deck_cards VALUES ('5', 'SC2016', '2');
+INSERT INTO deck_cards VALUES ('5', 'SGI017', '4');
+INSERT INTO deck_cards VALUES ('5', 'SGI018', '4');
+INSERT INTO deck_cards VALUES ('5', 'SGI019', '1');
+INSERT INTO deck_cards VALUES ('5', 'SM12a165', '3');
+INSERT INTO deck_cards VALUES ('5', 'S-P096', '6');
+INSERT INTO deck_cards VALUES ('5', 'S4a186', '2');
+INSERT INTO deck_cards VALUES ('5', 'SM11a059', '2');

@@ -1,8 +1,8 @@
 import './css/style.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import Main from './components/Main';
-import Competitive from './components/Competitive';
+import LoginForm from './components/pages/LoginForm';
+import Main from './components/pages/Main';
+import Competitive from './components/pages/Competitive';
 import {RecoilRoot} from 'recoil';
 
 function App() {

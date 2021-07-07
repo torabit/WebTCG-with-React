@@ -8,7 +8,6 @@ exports.login = function(req, res, pool) {
     } else {
         const user = req.query.user;
         client.query(`SELECT user_id FROM users where user_id = '${user}';`, (err, result) => {
-            console.log(result);
             if (result.rowCount === 1) {
               res.header('Access-Control-Allow-Origin', '*');
               res.json([{
