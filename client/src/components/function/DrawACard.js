@@ -1,34 +1,30 @@
-import Io from 'socket.io-client';
-
-const BATTLE_URL = process.env.REACT_APP_API_BATTLE_URL; // 対戦用api url
 export default function DrawACard (userName) {
-    let socketIo = Io(BATTLE_URL);
     let deck = [];
     let draw = [];
 
-    if (socketIo !== undefined) {
-        socketIo.emit('deck', { yourId: userName });
-        socketIo.on('getDeck', (original) => {
+    if (window.socket !== undefined) {
+        window.socket.emit('deck', { yourId: userName });
+        window.socket.on('getDeck', (original) => {
             draw = original.deck[original.deck.length - 1];
             deck = [...original.deck];
             deck.pop();
         });
     }
 
-    if (socketIo !== undefined) {
-        socketIo.emit('setHand', {
+    if (window.socket !== undefined) {
+        window.socket.emit('setHand', {
             yourId: userName,
             hand : draw,
         });
     }
 
-    if (socketIo !== undefined) {
-        socketIo.emit('setDeck', { 
+    if (window.socket !== undefined) {
+        window.socket.emit('setDeck', { 
             yourId: userName,
             deck : deck,
         });
-
     }
+    
     console.log(deck);
     console.log(draw);
     return deck;

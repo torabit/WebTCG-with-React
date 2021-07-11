@@ -2,8 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
-import pokeUra from '../../image/poke_ura.jpg';
+import {useRecoilValue,} from 'recoil';
+import OppBattleFieldState from '../../State/oppBattleFieldState';
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -75,39 +75,39 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const HandCardImage = (props) => {
+const OppBattleFieldImage = () => {
     const classes = useStyles();
-
+    const battlePokemon = useRecoilValue(OppBattleFieldState);
     return (
-        <Tooltip title={'デッキ: ' + props.deck.cards.length}>
-            <ButtonBase
-                focusRipple
-                className={classes.image}
-                focusVisibleClassName={classes.focusVisible}
+        <ButtonBase
+            focusRipple
+            className={classes.image}
+            focusVisibleClassName={classes.focusVisible}
+            style={{
+                width: 130,
+            }}
+        >
+            <span
+                className={classes.imageSrc}
                 style={{
-                    width: 130,
+                    backgroundImage: `url(${battlePokemon.img_url})`,
                 }}
-            >
-                <span
-                    className={classes.imageSrc}
-                    style={{
-                        backgroundImage: `url(${pokeUra})`,
-                    }}
-                />
-                <span className={classes.imageBackdrop} />
-                <span className={classes.imageButton}>
-                    <Typography
-                        component="span"
-                        variant="subtitle1"
-                        color="inherit"
-                        className={classes.imageTitle}
-                    >
-                        {'Deck'}
-                        <span className={classes.imageMarked} />
-                    </Typography>
-                </span>
-            </ButtonBase>
-        </Tooltip>
+            />
+            {battlePokemon.length === 0 && (
+                <span className={classes.imageBackdrop}/>
+            )}
+            <span className={classes.imageButton}>
+                <Typography
+                    component="span"
+                    variant="subtitle1"
+                    color="inherit"
+                    className={classes.imageTitle}
+                >
+                    {'BattleField'}
+                    <span className={classes.imageMarked} />
+                </Typography>
+            </span>
+        </ButtonBase>
     );
 }
-export default HandCardImage;
+export default OppBattleFieldImage;

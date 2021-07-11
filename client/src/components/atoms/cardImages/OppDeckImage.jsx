@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-import { useRecoilValue } from 'recoil';
-import trashState from '../State/trashState';
+import oppDeckState from '../../State/oppDeckState';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import pokeUra from '../../../image/poke_ura.jpg';
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -76,19 +77,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TrashImage = () => {
+const OppDeckImage = () => {
     const classes = useStyles();
-    const trash = useRecoilValue(trashState);
-    const [trashImage, setTrashImage] = useState('');
-    
-    useEffect(() => {
-        trash.length !== 0 && (
-            setTrashImage(trash[trash.length - 1].img_url)
-        );
-    },[trash]);
-    
+    const oppDeck = useRecoilValue(oppDeckState);
     return (
-        <Tooltip title={"トラッシュ: " + trash.length}>
+        <Tooltip title={`デッキ: ${oppDeck}`}>
             <ButtonBase
                 focusRipple
                 className={classes.image}
@@ -100,7 +93,7 @@ const TrashImage = () => {
                 <span
                     className={classes.imageSrc}
                     style={{
-                        backgroundImage: `url(${trashImage})`,
+                        backgroundImage: `url(${pokeUra})`,
                     }}
                 />
                 <span className={classes.imageBackdrop} />
@@ -111,7 +104,7 @@ const TrashImage = () => {
                         color="inherit"
                         className={classes.imageTitle}
                     >
-                        {'Trash'}
+                        {'Deck'}
                         <span className={classes.imageMarked} />
                     </Typography>
                 </span>
@@ -119,4 +112,4 @@ const TrashImage = () => {
         </Tooltip>
     );
 }
-export default TrashImage;
+export default OppDeckImage;

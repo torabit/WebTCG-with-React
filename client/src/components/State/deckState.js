@@ -2,7 +2,7 @@ import {atom} from 'recoil';
 
 const deckState = atom ({
     key: 'deck',
-    default: [],
+    default: 0,
 });
 
 export default deckState;

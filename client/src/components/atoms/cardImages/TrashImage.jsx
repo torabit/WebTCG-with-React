@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import trashState from '../../State/trashState';
+import trashImageState from '../../State/trashImageState';
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -79,12 +80,10 @@ const useStyles = makeStyles((theme) => ({
 const TrashImage = () => {
     const classes = useStyles();
     const trash = useRecoilValue(trashState);
-    const [trashImage, setTrashImage] = useState('');
+    const [trashImage,setTrashImage] = useRecoilState(trashImageState);
     
-    useEffect(() => {
-        trash.length !== 0 && (
-            setTrashImage(trash[trash.length - 1].img_url)
-        );
+    useEffect(() => { 
+        setTrashImage(trash[trash.length-1]);
     },[trash]);
     
     return (

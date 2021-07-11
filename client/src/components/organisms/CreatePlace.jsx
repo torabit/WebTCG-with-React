@@ -41,7 +41,7 @@ const CreatePlace = (props) => {
 		//length後々変更します
 		if (props.count >= 1) {
 			Axios.post(`${DB_URL}/createdeck`,{  
-				userId:userName,
+				userId:userName.yourId,
 				decks:props.cardDetails,
 				deckName:deckName,
 			});

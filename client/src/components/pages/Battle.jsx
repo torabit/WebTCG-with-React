@@ -81,7 +81,7 @@ const Battle = () => {
     const [open, setOpen] = useState(false);
     const [bool, setBool] = useState(false);
     const [userDecks, setUserDecks] = useState([]);
-    const [opponentUserName, setOpponentUserName] = useState('');
+    const [oppId, setOppId] = useState('');
 
     const onClick = () => {
         setOpen(true);
@@ -92,7 +92,7 @@ const Battle = () => {
     }
 
     const onChange = (event) => {
-        setOpponentUserName(event.target.value);
+        setOppId(event.target.value);
     }
 
     const chooseOpponent = () => {
@@ -104,7 +104,7 @@ const Battle = () => {
         // async を 関数としないと謎のエラーが出たので関数にしました。
         async function fetchData() {
             const res = await Axios.post(`${DB_URL}/getDeck`,{
-                userId: userName,
+                userId: userName.yourId,
             });
             const json = await res.data[0];
             setUserDecks(json.userDeck);
@@ -119,7 +119,7 @@ const Battle = () => {
             {bool && 
                 <SelectDecks 
                     userDecks={userDecks} 
-                    opponentUserName={opponentUserName}
+                    oppId={oppId}
                 />
             }
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -127,7 +127,7 @@ const Battle = () => {
                 <DialogContent>
                     <DialogContentText>
                         対戦相手のユーザーIDを入力してください。<br/>
-                        あなたのユーザーID:{userName}
+                        あなたのユーザーID:{userName.yourId}
                     </DialogContentText>
                     <TextField
                         autoFocus

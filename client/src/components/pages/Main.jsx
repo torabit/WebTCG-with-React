@@ -9,7 +9,7 @@ import UserNameContext from '../Context/UserNameContext';
 const sectionTab = {home: 'ホーム', deck: 'デッキ', battle: '対戦'}
 
 const Main = (props) => {
-    const userName = props.location.state.userId;
+    const userName = { yourId: props.location.state.userId }
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {

@@ -1,11 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import OpponentCardImage from '../atoms/cardImages/OpponentCardImage';
+import OppDeckImage from '../atoms/cardImages/OppDeckImage';
+import OppBattleFieldImage from '../atoms/cardImages/OppBattleFieldImage';
+import OppHandCardImage from '../atoms/cardImages/OppHandCardImage';
+import oppHandState from '../State/oppHandState';
+import oppDeckState from '../State/oppDeckState';
+import oppBattleFieldState from '../State/oppBattleFieldState';
 
-const opponentField = () => {
-    const h = [0,1,2,3,4,5,6];
+const OpponentField = () => {
+    const [oppHand, setOppHand] = useRecoilState(oppHandState);
+    const setOppDeck = useSetRecoilState(oppDeckState);
+    const setOppBattleField = useSetRecoilState(oppBattleFieldState);
     const b = [0,1,2,3,4];
     const s = [0,1,2,3,4,5];
+
+    // useEffect(() => {
+    //     window.socket.on('oppBroadcast', players => {
+    //         setOppDeck(players.oppDeckSize);
+    //         setOppHand(players.oppHand);
+    //         setOppBattleField(players.oppBattleField);
+    //     });
+    //     return () => {
+    //         console.log('Disconnecting..');
+    //         window.socket.current.disconnect();
+    //     };
+    // },[]);
+
     return (
         <Grid container spacing={0}>
             <Grid item xs={3}>
@@ -16,7 +38,7 @@ const opponentField = () => {
                     </Grid>
                     <Grid item xs={12}>
                         {/* deck */}
-                        <OpponentCardImage/>
+                        <OppDeckImage/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -24,10 +46,10 @@ const opponentField = () => {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         {/* handCards */}
-                        <Grid container spacing={5}>
-                            {h.map(ha =>
+                        <Grid container spacing={0}>
+                            {Object.keys(oppHand).map(key => 
                                 <Grid item xs={1}>
-                                    <OpponentCardImage/>
+                                    <OppHandCardImage oppHandCard={oppHand[key]} index={key}/>
                                 </Grid>
                             )}
                         </Grid>
@@ -42,9 +64,12 @@ const opponentField = () => {
                             )}
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid container spacing={10}>
                         {/* battleField */}
-                        <OpponentCardImage/>
+                        <Grid item xs={9}>
+                            <OppBattleFieldImage/>
+                        </Grid>
+                        <Grid item xs={3}/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -62,4 +87,4 @@ const opponentField = () => {
     );
 }
 
-export default opponentField;
+export default OpponentField;

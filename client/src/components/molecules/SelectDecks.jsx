@@ -92,7 +92,7 @@ const SelectDecks = (props) => {
             </div>
             <CardListSideBar 
                 cards={cards}
-                opponentUserName={props.opponentUserName}
+                oppId={props.oppId}
             />
         </>
     );
