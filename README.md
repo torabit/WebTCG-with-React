@@ -1,4 +1,4 @@
-# pokemon_card
+# pokemonTCG
 このWebTCG-with-ReactはPokemon🄬の画像を使用しています。
 営利目的での利用は一切しておりません。
 
