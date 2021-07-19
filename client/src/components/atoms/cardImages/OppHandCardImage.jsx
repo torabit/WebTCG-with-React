@@ -68,34 +68,32 @@ const OppHandCardImage = (props) => {
     };
 
     return (
-        <div>
-            <ButtonBase
-                focusRipple
-                className={classes.image}
+        <ButtonBase
+            focusRipple
+            className={classes.image}
+            style={{
+                width: image.width,
+                height: image.height,
+            }}              
+        >
+            <span
+                className={classes.imageSrc}
                 style={{
-                    width: image.width,
-                    height: image.height,
-                }}              
-            >
-                <span
-                    className={classes.imageSrc}
-                    style={{
-                        backgroundImage: `url(${image.url})`,
-                    }}
-                />
-                <span className={classes.imageButton}>
-                    <Typography
-                        component="span"
-                        variant="subtitle1"
-                        color="inherit"
-                        className={classes.imageTitle}
-                    >
-                        {'Hand'}
-                        <span className={classes.imageMarked} />
-                    </Typography>
-                </span>
-            </ButtonBase>
-        </div>
+                    backgroundImage: `url(${image.url})`,
+                }}
+            />
+            <span className={classes.imageButton}>
+                <Typography
+                    component="span"
+                    variant="subtitle1"
+                    color="inherit"
+                    className={classes.imageTitle}
+                >
+                    {'Hand'}
+                    <span className={classes.imageMarked} />
+                </Typography>
+            </span>
+        </ButtonBase>
     );
 }
 export default OppHandCardImage;

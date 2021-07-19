@@ -10,7 +10,6 @@ import pokeUra from '../../../image/poke_ura.jpg';
 const useStyles = makeStyles((theme) => ({
     image: {
         position: 'relative',
-        height: 180,
         margin: '10px',
         [theme.breakpoints.down('xs')]: {
             width: '100% !important', // Overrides inline-style
@@ -88,6 +87,7 @@ const DeckImage = () => {
                 focusVisibleClassName={classes.focusVisible}
                 style={{
                     width: 130,
+                    height: 180
                 }}
             >
                 <span

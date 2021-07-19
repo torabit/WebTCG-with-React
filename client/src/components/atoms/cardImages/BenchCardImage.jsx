@@ -1,10 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Typography from '@material-ui/core/Typography';
 import { useRecoilValue } from 'recoil';
-import battleFieldState from '../../State/battleFieldState';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import EnergyBadge from '../../molecules/EnergyBadge';
+import Typography from '@material-ui/core/Typography';
 import energyAndToolState from '../../State/energyAndToolState';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -18,9 +17,6 @@ const useStyles = makeStyles((theme) => ({
         },
         '&:hover, &$focusVisible': {
             zIndex: 1,
-            '& $imageBackdrop': {
-                opacity: 0.15,
-            },
             '& $imageMarked': {
                 opacity: 0,
             },
@@ -51,17 +47,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundPosition: 'center 40%',
         borderRadius: '5%',
     },
-    imageBackdrop: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: theme.palette.common.black,
-        opacity: 0.4,
-        transition: theme.transitions.create('opacity'),
-        borderRadius: '5%',
-    },
     imageTitle: {
         position: 'relative',
         padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${theme.spacing(1) + 6}px`,
@@ -81,11 +66,16 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const BattleFieldImage = () => {
+const BenchCardImage = (props) => {
     const classes = useStyles();
-    const battlePokemon = useRecoilValue(battleFieldState);
+    const bench = props.benchCard;
     const energyAndTool = useRecoilValue(energyAndToolState);
-    const cardDetail = energyAndTool[`${battlePokemon.ingame_id}`];
+    const cardDetail = energyAndTool[`${bench.ingame_id}`];
+    const image = {
+        url: bench.img_url,
+        width: 130,
+        height: 180,
+    };
 
     return (
         <Tooltip title={
@@ -96,21 +86,17 @@ const BattleFieldImage = () => {
             <ButtonBase
                 focusRipple
                 className={classes.image}
-                focusVisibleClassName={classes.focusVisible}
                 style={{
-                    width: 130,
-                    height: 180,
-                }}
+                    width: image.width,
+                    height: image.height,
+                }}            
             >
                 <span
                     className={classes.imageSrc}
                     style={{
-                        backgroundImage: `url(${battlePokemon.img_url})`,
+                        backgroundImage: `url(${image.url})`,
                     }}
                 />
-                {battlePokemon.length === 0 && (
-                    <span className={classes.imageBackdrop}/>
-                )}
                 <span className={classes.imageButton}>
                     <Typography
                         component="span"
@@ -118,15 +104,15 @@ const BattleFieldImage = () => {
                         color="inherit"
                         className={classes.imageTitle}
                     >
-                        {'BattleField'}
+                        {'Bench'}
                         <span className={classes.imageMarked} />
                     </Typography>
                 </span>
                 <span className={classes.iconEnergy}>
-                    <EnergyBadge ingameId={battlePokemon.ingame_id}/>
+                    <EnergyBadge ingameId={bench.ingame_id}/>
                 </span>
             </ButtonBase>
         </Tooltip>
     );
 }
-export default BattleFieldImage;
+export default BenchCardImage;

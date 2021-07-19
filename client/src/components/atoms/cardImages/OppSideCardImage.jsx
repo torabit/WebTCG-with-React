@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SideCardImage = (props) => {
+const OppSideCardImage = (props) => {
     const classes = useStyles();
-    const sideCard = props.sideCard;
+    const sideCard = props.oppSideCard;
     
     return (
         // Tooltipは削除予定
@@ -53,4 +53,4 @@ const SideCardImage = (props) => {
         </Tooltip>
     );
 }
-export default SideCardImage;
+export default OppSideCardImage;

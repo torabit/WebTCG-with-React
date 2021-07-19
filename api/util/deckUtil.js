@@ -11,6 +11,5 @@ function shuffle (deck) {
     return deck;
 }
 
-export { 
-    shuffle
-}; 
+
+exports.shuffle = shuffle;

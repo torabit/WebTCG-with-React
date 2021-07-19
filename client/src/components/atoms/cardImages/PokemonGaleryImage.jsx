@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
-import { useRecoilValue } from 'recoil';
-import trashState from '../../State/trashState';
+import choosenCardsState from '../../State/choosenCardsState';
+import howManyState from '../../State/howManyState';
+import countState from '../../State/countState';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 const useStyles = makeStyles((theme) => ({
     image: {
         position: 'relative',
-        height: 180,
         margin: '10px',
         [theme.breakpoints.down('xs')]: {
             width: '100% !important', // Overrides inline-style
@@ -17,13 +17,7 @@ const useStyles = makeStyles((theme) => ({
         },
         '&:hover, &$focusVisible': {
             zIndex: 1,
-            '& $imageBackdrop': {
-                opacity: 0.15,
-            },
             '& $imageMarked': {
-                opacity: 0,
-            },
-            '& $imageTitle': {
                 opacity: 0,
             },
         },
@@ -40,16 +34,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         color: theme.palette.common.white,
     },
-    imageSrc: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center 40%',
-        borderRadius: '5%',
-    },
     imageBackdrop: {
         position: 'absolute',
         left: 0,
@@ -59,6 +43,16 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.common.black,
         opacity: 0.4,
         transition: theme.transitions.create('opacity'),
+        borderRadius: '5%',
+    },
+    imageSrc: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
         borderRadius: '5%',
     },
     imageTitle: {
@@ -76,36 +70,58 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TrashImage = () => {
+const PokemonGalleryImage = (props) => {
     const classes = useStyles();
-    const trash = useRecoilValue(trashState);
-    let trashImg = trash[trash.length-1];
-
+    const card = props.card;
+    const howMany = useRecoilValue(howManyState);
+    const [choosenCards, setChoosenCards] = useRecoilState(choosenCardsState);
+    const [isSelected, setIsSelected] = useState(false);
+    const [count, setCount] = useRecoilState(countState);
     const image = {
+        url: card.img_url,
         width: 130,
-        height: 180
-    }
-    
+        height: 180,
+    };
+
+    const selected = () => {
+        let newChoosenCards = [];
+        if (!isSelected && count < howMany) {
+            setIsSelected(prev => !prev);
+            setChoosenCards([...choosenCards, props.ingameId]);
+            setCount(prev => prev + 1);
+        } else if (isSelected){
+            setIsSelected(prev => !prev);
+            newChoosenCards = [...choosenCards];
+            newChoosenCards.forEach((newChoosenCard, index) => {
+                if(newChoosenCard === props.ingameId) {
+                    newChoosenCards.splice(index, 1);
+                }
+            });
+            setChoosenCards(newChoosenCards);
+            setCount(prev => prev - 1);
+        }
+    } 
+
     return (
-        <Tooltip title={"トラッシュ: " + trash.length}>
-            <ButtonBase
-                focusRipple
-                className={classes.image}
-                focusVisibleClassName={classes.focusVisible}
+        <ButtonBase
+            focusRipple
+            className={classes.image}
+            style={{
+                width: image.width,
+                height: image.height,
+            }}
+            onClick={selected}         
+        >
+            <span
+                className={classes.imageSrc}
                 style={{
-                    width: image.width,
-                    height: image.height
+                    backgroundImage: `url(${image.url})`,
                 }}
-            >
-                {trashImg !== undefined && (
-                    <span
-                        className={classes.imageSrc}
-                        style={{
-                            backgroundImage: `url(${trashImg.img_url})`,
-                        }}
-                    />
-                )}
+            />
+            {(count >= howMany || isSelected)&&(
                 <span className={classes.imageBackdrop} />
+            )}
+            {isSelected &&(
                 <span className={classes.imageButton}>
                     <Typography
                         component="span"
@@ -113,12 +129,12 @@ const TrashImage = () => {
                         color="inherit"
                         className={classes.imageTitle}
                     >
-                        {'Trash'}
+                        {'Selected'}
                         <span className={classes.imageMarked} />
                     </Typography>
                 </span>
-            </ButtonBase>
-        </Tooltip>
+            )}
+        </ButtonBase>
     );
 }
-export default TrashImage;
+export default PokemonGalleryImage;

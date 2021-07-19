@@ -1,38 +1,56 @@
-import React,{ useEffect, useState, useContext } from 'react';
-import {useRecoilState, useSetRecoilState, useRecoilValue} from 'recoil';
+import React,{ useEffect, useState, useContext, useCallback } from 'react';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import yourHandState from '../State/yourHandState';
+import HandsState from '../State/handsState';
 import battleFieldState from '../State/battleFieldState';
-import trashState from '../State/trashState';
-import phaseState from '../State/phaseState';
-import deckState from '../State/deckState';
-import oppHandState from '../State/oppHandState';
+import requireCostState from '../State/requireCostState';
+import howManyState from '../State/howManyState';
+import contentTextState from '../State/contentTextState';
 import UserNameContext from '../Context/UserNameContext';
+import galleryState from '../State/galleryState';
+import searchSortState from '../State/searchSortState';
+import cardNameState from '../State/cardNameState';
+import displayGiveEnergyState from '../State/displayGiveEnergyState';
+import ingameIdState from '../State/ingameIdState';
+import benchState from '../State/benchState';
+import oppBenchState from '../State/oppBenchState';
 
 const CardComands = (props) => {
     const [superTypeButtonText, setSuperTypeButtonText] = useState('');
     const [tcgFunction, setTcgFunction] = useState('');
-    const [yourHand, setYourHand] = useRecoilState(yourHandState);
-    const setOppHand = useSetRecoilState(oppHandState);
-    const setDeck = useSetRecoilState(deckState);
-    const setTrash = useSetRecoilState(trashState);
-    const setBattleField = useSetRecoilState(battleFieldState);
-    const phase = useRecoilValue(phaseState);
+    const hands = useRecoilValue(HandsState);
+    const battleField = useRecoilValue(battleFieldState);
+	const setContentText = useSetRecoilState(contentTextState);
+    const setHowMany = useSetRecoilState(howManyState);
+    const setRequireCost = useSetRecoilState(requireCostState);
+    const setGallery = useSetRecoilState(galleryState);
+    const setCardName = useSetRecoilState(cardNameState);
+    const setSearchSort = useSetRecoilState(searchSortState);
     const userName = useContext(UserNameContext);
+    const setDisplayGiveEnergy = useSetRecoilState(displayGiveEnergyState);
+    const setIngameId = useSetRecoilState(ingameIdState);
+    const bench = useRecoilValue(benchState);
+    const oppBench = useRecoilValue(oppBenchState);
+    
+    const cardComandsFunc = useCallback(() => {
+        let newHands = [...hands];
 
-    let yourhands = [...yourHand];
-
-    const whichSuperTypeFunc = (supertype) => {
-        switch (supertype) {
+        switch (props.supertype) {
             case 0:
                 setSuperTypeButtonText('ポケモンにつける');
                 setTcgFunction(() => useEnergyCard);
                 break;
             case 1:
-                setSuperTypeButtonText('バトル場に出す');
-                setTcgFunction(() => callToBattleField);
-                break;
+                if (battleField.length === 0) {
+                    setSuperTypeButtonText('バトル場に出す');
+                    setTcgFunction(() => callToBattleField);
+                    break;
+                } else {
+                    setSuperTypeButtonText('ベンチに出す');
+                    setTcgFunction(() => callToBench);
+                    break;
+                }
             case 2:
                 setSuperTypeButtonText('使用する');
                 setTcgFunction(() => useSpellCard);
@@ -40,47 +58,94 @@ const CardComands = (props) => {
             default:
                 console.log('nothing');
         }
-    }
+        
+        const callToBattleField = async (ingameId) => {
+            window.socket.emit('callToBattleField', { 
+                yourId: userName.yourId, 
+                oppId: userName.oppId,
+                ingameId: ingameId
+            });
+            props.handleClose();
+        }
+    
+        const callToBench = async (ingameId) => {
+            window.socket.emit('callToBench', {
+                yourId: userName.yourId, 
+                oppId: userName.oppId,
+                ingameId: ingameId
+            });
+            props.handleClose();
+        }
+    
+        const useSpellCard = async (ingameId) => {
+            let newYourHands = [...newHands];
+            let index = 0;
+            for (let i=0; i<newYourHands.length; i++) {
+                if(newYourHands[i].ingame_id === ingameId) index = i;
+            }
+            switch(props.cardName) {
+                case 'クイックボール':
+                    newYourHands.splice(index, 1);
+                    setGallery(newYourHands);
+                    setContentText('クイックボール: トラッシュするカードを1枚選んでください');
+                    setHowMany(1);
+                    setIngameId(ingameId);
+                    setRequireCost(true);
+                    setCardName(props.cardName);
+                    break;
+                case 'ポケモン通信':
+                    newYourHands.splice(index, 1);
+                    setGallery(newYourHands);
+                    setContentText('ポケモン通信: デッキに戻すポケモンを1枚選んでください');
+                    setHowMany(1);
+                    setIngameId(ingameId);
+                    setRequireCost(true);
+                    setCardName(props.cardName);
+                    setSearchSort(1);
+                    break;
+                case 'ポケモンいれかえ':
+                    setGallery(bench);
+                    setContentText('ポケモンいれかえ: 自分のバトルポケモンをベンチポケモンと入れ替える');
+                    setHowMany(1);
+                    setIngameId(ingameId);
+                    setRequireCost(true);
+                    setCardName(props.cardName);
+                    break;
+                case 'ボスの指令（フラダリ）':
+                    setGallery(oppBench);
+                    setContentText('ボスの指令: 相手のベンチポケモンを1匹選び、バトルポケモンと入れ替える');
+                    setHowMany(1);
+                    setIngameId(ingameId);
+                    setRequireCost(true);
+                    setCardName(props.cardName);
+                    break;
+                default :
+                    window.socket.emit('useSpellCard', {
+                        yourId: userName.yourId,
+                        oppId: userName.oppId,
+                        ingameId: ingameId
+                    });
+            }
+            props.handleClose();
+        }
+    
+        const useEnergyCard = async (ingameId) => {
+            setHowMany(1);
+            setIngameId(ingameId);
+            setDisplayGiveEnergy(true);
+            props.handleClose();
+        }
+    },[
+        battleField.length, setContentText, setGallery, 
+        props, setHowMany, setDisplayGiveEnergy,
+        setRequireCost, setCardName, setSearchSort,
+        userName.oppId, userName.yourId, hands,
+        setIngameId, bench
+    ]);
 
     useEffect(() => {
-        whichSuperTypeFunc(props.supertype);
-    },[props.handleClick]);
-    
-    // 削除予定関数
-    const updateYourHand = (index) => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                yourhands.splice(index, 1);
-                setYourHand(yourhands);
-                resolve();
-            },);
-        });
-    }
-    
-    const callToBattleField = async (index) => {
-        window.socket.emit('callToBattleField', { 
-            yourId: userName.yourId, 
-            oppId: userName.oppId,
-            index: index
-        });
-        props.handleClose();
-    }
-
-    const useSpellCard = async (index) => {
-        window.socket.emit('useSpellCard', {
-            yourId: userName.yourId,
-            oppId: userName.oppId,
-            index: index
-        });
-        props.handleClose();
-    }
-
-    const useEnergyCard = async (index) => {
-        const newCard = yourhands[index];
-        setTrash((prev) => [...prev, newCard]);
-        props.handleClose();
-        await updateYourHand(index);
-    }
+        cardComandsFunc();
+    },[cardComandsFunc]);
 
     return(
         <Menu
@@ -90,10 +155,8 @@ const CardComands = (props) => {
             open={Boolean(props.anchorEl)}
             onClose={props.handleClose}
         >
-            {/* {(phase === 0 && props.supertype !== 1) ||(
-                <MenuItem onClick={() => tcgFunction(props.index)}>{superTypeButtonText}</MenuItem>
-            )} */}
-            <MenuItem onClick={() => tcgFunction(props.index)}>{superTypeButtonText}</MenuItem>
+            {/* 関数ごとにボタンの表示や非表示を実装する予定 */}
+            <MenuItem onClick={() => tcgFunction(props.ingameId)}>{superTypeButtonText}</MenuItem>
         </Menu>
     );
 }

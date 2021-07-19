@@ -27,6 +27,7 @@ exports.getDeck = function(req, res, pool) {
 								deck_id: row.deck_id,
 								deck_name: row.deck_name,
 								cards: [{
+									ingame_id:'',
 									number_of_cards: row.number_of_cards, card_id: row.card_id, card_name: row.pokemon_card_name,
 									supertype: row.supertype, subtypes: row.subtypes, hp: row.hp, types: row.types, evolvesFrom: row.evolvesfrom,
 									first_skill_type: row.first_skill_type, first_skill_type_cost: row.first_skill_type_cost, first_skill_colorless_cost: row.first_skill_colorless_cost,
@@ -37,6 +38,7 @@ exports.getDeck = function(req, res, pool) {
 							});
 						} else {
 							deck[deck.length - 1]['cards'].push({
+									ingame_id:'',
 									number_of_cards: row.number_of_cards, card_id: row.card_id, card_name: row.pokemon_card_name,
 									supertype: row.supertype, subtypes: row.subtypes, hp: row.hp, types: row.types, evolvesFrom: row.evolvesfrom,
 									first_skill_type: row.first_skill_type, first_skill_type_cost: row.first_skill_type_cost, first_skill_colorless_cost: row.first_skill_colorless_cost,

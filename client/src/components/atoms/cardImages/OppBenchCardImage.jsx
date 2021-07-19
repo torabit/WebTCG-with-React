@@ -2,15 +2,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
-import oppDeckState from '../../State/oppDeckState';
-import { useRecoilValue } from 'recoil';
-import pokeUra from '../../../image/poke_ura.jpg';
 
 const useStyles = makeStyles((theme) => ({
     image: {
         position: 'relative',
-        height: 180,
         margin: '10px',
         [theme.breakpoints.down('xs')]: {
             width: '100% !important', // Overrides inline-style
@@ -18,9 +13,6 @@ const useStyles = makeStyles((theme) => ({
         },
         '&:hover, &$focusVisible': {
             zIndex: 1,
-            '& $imageBackdrop': {
-                opacity: 0.15,
-            },
             '& $imageMarked': {
                 opacity: 0,
             },
@@ -51,17 +43,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundPosition: 'center 40%',
         borderRadius: '5%',
     },
-    imageBackdrop: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: theme.palette.common.black,
-        opacity: 0.4,
-        transition: theme.transitions.create('opacity'),
-        borderRadius: '5%',
-    },
     imageTitle: {
         position: 'relative',
         padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${theme.spacing(1) + 6}px`,
@@ -77,39 +58,42 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const OppDeckImage = () => {
+const BenchCardImage = (props) => {
     const classes = useStyles();
-    const oppDeck = useRecoilValue(oppDeckState);
+    const bench = props.oppBench;
+    const image = {
+        url: bench.img_url,
+        width: 130,
+        height: 180,
+    }
+
     return (
-        <Tooltip title={`デッキ: ${oppDeck}`}>
-            <ButtonBase
-                focusRipple
-                className={classes.image}
-                focusVisibleClassName={classes.focusVisible}
+        <ButtonBase
+            focusRipple
+            className={classes.image}
+            style={{
+                width: image.width,
+                height: image.height,
+            }}            
+        >
+            <span
+                className={classes.imageSrc}
                 style={{
-                    width: 130,
+                    backgroundImage: `url(${image.url})`,
                 }}
-            >
-                <span
-                    className={classes.imageSrc}
-                    style={{
-                        backgroundImage: `url(${pokeUra})`,
-                    }}
-                />
-                <span className={classes.imageBackdrop} />
-                <span className={classes.imageButton}>
-                    <Typography
-                        component="span"
-                        variant="subtitle1"
-                        color="inherit"
-                        className={classes.imageTitle}
-                    >
-                        {'Deck'}
-                        <span className={classes.imageMarked} />
-                    </Typography>
-                </span>
-            </ButtonBase>
-        </Tooltip>
+            />
+            <span className={classes.imageButton}>
+                <Typography
+                    component="span"
+                    variant="subtitle1"
+                    color="inherit"
+                    className={classes.imageTitle}
+                >
+                    {'Bench'}
+                    <span className={classes.imageMarked} />
+                </Typography>
+            </span>
+        </ButtonBase>
     );
 }
-export default OppDeckImage;
+export default BenchCardImage;

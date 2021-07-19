@@ -2,8 +2,6 @@ import React,{ useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-import { useRecoilValue } from 'recoil';
-import yourHandState from '../../State/yourHandState';
 import CardComands from '../../molecules/CardComands';
 
 const useStyles = makeStyles((theme) => ({
@@ -63,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
 
 const HandCardImage = (props) => {
     const classes = useStyles();
-    const yourHand = useRecoilValue(yourHandState);
     const [anchorEl, setAnchorEl] = useState(null);
     
     const handleClick = (event) => {
@@ -89,7 +86,7 @@ const HandCardImage = (props) => {
                     width: image.width,
                     height: image.height,
                 }}
-                onClick={handleClick}                
+                onClick={handleClick}
             >
                 <span
                     className={classes.imageSrc}
@@ -110,8 +107,9 @@ const HandCardImage = (props) => {
                 </span>
             </ButtonBase>
             <CardComands 
-                supertype={yourHand[props.index].supertype} 
-                index={props.index} 
+                supertype={props.handCard.supertype} 
+                cardName={props.handCard.card_name}
+                ingameId={props.handCard.ingame_id} 
                 anchorEl={anchorEl}
                 handleClose={handleClose}
                 handleClick={handleClick}

@@ -2,11 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-import { useRecoilValue } from 'recoil';
-import battleFieldState from '../../State/battleFieldState';
-import EnergyBadge from '../../molecules/EnergyBadge';
-import energyAndToolState from '../../State/energyAndToolState';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useRecoilValue } from 'recoil';
+import oppTrashState from '../../State/oppTrashState';
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -75,42 +73,36 @@ const useStyles = makeStyles((theme) => ({
         left: 'calc(50% - 9px)',
         transition: theme.transitions.create('opacity'),
     },
-    iconEnergy: {
-        position: 'absolute',
-        left: '90%',
-    }
 }));
 
-const BattleFieldImage = () => {
+const OppTrashImage = () => {
     const classes = useStyles();
-    const battlePokemon = useRecoilValue(battleFieldState);
-    const energyAndTool = useRecoilValue(energyAndToolState);
-    const cardDetail = energyAndTool[`${battlePokemon.ingame_id}`];
-
+    const oppTrash = useRecoilValue(oppTrashState);
+    
+    const image = {
+        url: oppTrash[oppTrash.length-1],
+        width: 130,
+        height: 180
+    }
+    
     return (
-        <Tooltip title={
-            <span style={{whiteSpace: 'pre-line'}}>
-                {cardDetail !== undefined && (cardDetail.energyDetail.map(energy => `エナジーカード: ${energy.card_name} \n`))}
-            </span>}
-        >
+        <Tooltip title={"トラッシュ: " + oppTrash.length}>
             <ButtonBase
                 focusRipple
                 className={classes.image}
                 focusVisibleClassName={classes.focusVisible}
                 style={{
-                    width: 130,
-                    height: 180,
+                    width: image.width,
+                    height: image.height
                 }}
             >
                 <span
                     className={classes.imageSrc}
                     style={{
-                        backgroundImage: `url(${battlePokemon.img_url})`,
+                        backgroundImage: `url(${image.url})`,
                     }}
                 />
-                {battlePokemon.length === 0 && (
-                    <span className={classes.imageBackdrop}/>
-                )}
+                <span className={classes.imageBackdrop} />
                 <span className={classes.imageButton}>
                     <Typography
                         component="span"
@@ -118,15 +110,12 @@ const BattleFieldImage = () => {
                         color="inherit"
                         className={classes.imageTitle}
                     >
-                        {'BattleField'}
+                        {'Trash'}
                         <span className={classes.imageMarked} />
                     </Typography>
-                </span>
-                <span className={classes.iconEnergy}>
-                    <EnergyBadge ingameId={battlePokemon.ingame_id}/>
                 </span>
             </ButtonBase>
         </Tooltip>
     );
 }
-export default BattleFieldImage;
+export default OppTrashImage;

@@ -20,7 +20,7 @@ const NoBasicDialog = (props) => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.mulligan} color="secondary">
+                <Button color="secondary">
                     はい
                 </Button>
             </DialogActions>

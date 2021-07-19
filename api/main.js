@@ -28,46 +28,46 @@ router.use(function(req, res, next) {
 
 // ログイン
 router.get('/login', (req, res) => {
-    const pool = conection.conection();
-    login.login(req, res, pool);
+    login.login(req, res, conection.conection());
+    conection.end();
 });
 
 router.post('/login', (req, res) => {
-    const pool = conection.conection();
-    login.login(req, res, pool);
+    login.login(req, res, conection.conection());
+    conection.end();
 });
 
 // カード取得
 router.get('/getcards', (req, res) => {
-    const pool = conection.conection();
-    getCards.getCards(req,res,pool);
+    getCards.getCards(req, res, conection.conection());
+    conection.end();
 });
 
 router.post('/getcards', (req, res) => {
-    const pool = conection.conection();
-    getCards.getCards(req,res,pool);
+    getCards.getCards(req, res, conection.conection());
+    conection.end();
 });
 
 // デッキ作成
 router.get('/createdeck', (req, res) => {
-    const pool = conection.conection();
-    createDeck.createDeck(req,res,pool);
+    createDeck.createDeck(req,res,conection.conection());
+    conection.end();
 });
 
 router.post('/createdeck', (req, res) => {
-    const pool = conection.conection();
-    createDeck.createDeck(req,res,pool);
+    createDeck.createDeck(req,res,conection.conection());
+    conection.end();
 });
 
 // デッキ取得
 router.get('/getdeck', (req, res) => {
-    const pool = conection.conection();
-    getdeck.getdeck(req,res,pool);
+    getdeck.getdeck(req,res,conection.conection());
+    conection.end();
 });
 
 router.post('/getdeck', (req, res) => {
-    const pool = conection.conection();
-    getDeck.getDeck(req,res,pool);
+    getDeck.getDeck(req,res,conection.conection());
+    conection.end();
 });
 
 // サーバー起動

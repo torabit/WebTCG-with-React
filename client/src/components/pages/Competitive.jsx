@@ -1,145 +1,108 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import jirachi from '../../image/jirachiWallPaper.jpg'
 import { Box, Divider } from '@material-ui/core';
 import YourField from '../organisms/YourField';
-import ShuffleTheDeck from '../function/ShuffleTheDeck';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import yourHandState from '../State/yourHandState';
-import yourSideCardsState from '../State/yourSideCardsState';
-import phaseState from '../State/phaseState';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import handsState from '../State/handsState';
+import sideCardState from '../State/sideCardState';
+import benchState from '../State/benchState';
 import battleFieldState from '../State/battleFieldState';
 import trashState from '../State/trashState';
-import turnDisplayState from '../State/turnDisplayState';
 import deckState from '../State/deckState';
 import UserNameContext from '../Context/UserNameContext';
 import OpponentField from '../organisms/OpponentField';
 import oppDeckState from '../State/oppDeckState';
-import oppBattleFieldState from '../State/oppBattleFieldState';
 import oppHandState from '../State/oppHandState';
-import NoBasicDialog from '../molecules/NoBasicDialog';
+import oppSideCardState from '../State/oppSideCardState';
+import oppBenchState from '../State/oppBenchState';
+import oppTrashState from '../State/oppTrashState';
+import oppBattleFieldState from '../State/oppBattleFieldState';
+import phaseState from '../State/phaseState';
+import whichTurnState from '../State/whichTurnState';
+import galleryState from '../State/galleryState';
+import displayGalleryState from '../State/displayGalleryState';
+import contentTextState from '../State/contentTextState';
+import searchSortState from '../State/searchSortState';
+import howManyState from '../State/howManyState';
+import whichSortState from '../State/whichSortState';
+import energyAndToolState from '../State/energyAndToolState';
+// import NoBasicDialog from '../molecules/NoBasicDialog';
 
 const Competitive = (props) => {
     const [deck, setDeck] = useRecoilState(deckState);
-    const [yourHand, setYourHand] = useRecoilState(yourHandState);
-    const setYourSideCards = useSetRecoilState(yourSideCardsState);
-    const [phase, setPhase] = useRecoilState(phaseState);
-    const [battleField, setBattleField] = useRecoilState(battleFieldState);
+    const setHand = useSetRecoilState(handsState);
+    const setSideCard = useSetRecoilState(sideCardState);
+    const setBench = useSetRecoilState(benchState);
+    const setPhase = useSetRecoilState(phaseState);
+    const setBattleField = useSetRecoilState(battleFieldState);
     const setTrash = useSetRecoilState(trashState);
-    const setTurnDisplay = useSetRecoilState(turnDisplayState);
-    const [noBasic, setNoBasic] = useState(false);
-    const [isPrepare, setIsPrepare] = useState(true);
+    const setWhichTurn = useSetRecoilState(whichTurnState);
+    const setGallery = useSetRecoilState(galleryState);
+    const setDisplayGallery = useSetRecoilState(displayGalleryState);
+    const setContentText = useSetRecoilState(contentTextState);
+    const setHowMany = useSetRecoilState(howManyState);
+    const setSearchSort = useSetRecoilState(searchSortState);
+    const setWhichSort = useSetRecoilState(whichSortState);
+    const setEnergyAndTool = useSetRecoilState(energyAndToolState);
+    // Nobasic工事中です
+    // const [noBasic, setNoBasic] = useState(false);
     const userName = {
         yourId: props.location.state.yourId, 
         oppId: props.location.state.oppId
     }
     const setOppDeck = useSetRecoilState(oppDeckState);
     const setOppHand = useSetRecoilState(oppHandState);
+    const setOppSideCard = useSetRecoilState(oppSideCardState);
+    const setOppBench = useSetRecoilState(oppBenchState);
+    const setOppTrash = useSetRecoilState(oppTrashState);
     const setOppBattleField = useSetRecoilState(oppBattleFieldState);
 
-    console.log(yourHand);
-    
-    // socket通信実装時に修正
-    // useEffect(() => {
-        // async function fetchDate() {
-        //     if (phase === 0) {
-        //         setPhase(0);
-        //         if (battleField.length !== 0) {
-        //             for (let i=0; i<6; i++) {
-        //                 await SetSideCards();
-        //             }
-        //             setPhase(prev => prev+1);
-        //         }
-        //     } else if (phase === 1) {
-        //         await Draw();
-        //         console.log('draw');
-        //         setPhase(prev => prev+1);
-        //     } else if (phase === 2) {
-        //         console.log('done draw, now your turn')
-        //     }
-        // }
-    //     fetchDate();
-    // },[phase, battleField]);
     useEffect(() => {
-        window.socket.on('broadcast', players => {
-            setDeck(players.deckSize);
-            setYourHand(players.hand);
-            setYourSideCards(players.sideCard);
-            setTrash(players.trash);
-            setBattleField(players.battleField);
+        window.socket.on('statuses', res => {
+            setPhase(res.phase);
+            setWhichTurn(res.whichTurn);
         });
-        window.socket.on('oppBroadcast', players => {
-            setOppDeck(players.oppDeckSize);
-            setOppHand(players.oppHand);
-            setOppBattleField(players.oppBattleField);
+        window.socket.on('broadcast', res => {
+            setDeck(res.deckSize);
+            setHand(res.hand);
+            setSideCard(res.sideCard);
+            setBench(res.bench);
+            setTrash(res.trash);
+            setBattleField(res.battleField);
+            setEnergyAndTool(res.energyAndTool);
+        });
+        window.socket.on('oppBroadcast', res => {
+            setOppDeck(res.oppDeckSize);
+            setOppHand(res.oppHand);
+            setOppSideCard(res.oppSideCard);
+            setOppBench(res.oppBench);
+            setOppTrash(res.oppTrash);
+            setOppBattleField(res.oppBattleField);
+        });
+        window.socket.on('searchRequest', res =>{
+            setGallery(res.deck);
+            setSearchSort(res.searchSort);
+            setContentText(res.contentText);
+            setHowMany(res.howMany);
+            setWhichSort(res.whichSort);
+            setDisplayGallery(res.displayGallery);
         });
         return () => {
             console.log('Disconnecting..');
             window.socket.current.disconnect();
         };
-    },[]);
-    
-    const setSideCards = () => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                window.socket.emit('setSideCard', { yourId: userName.yourId});
-                resolve();
-            },300);
-        });
-    }
-
-    const draw = () => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                window.socket.emit('draw', { yourId: userName.yourId });
-                resolve();
-            },300);
-        });
-    }
-
-    const oppDraw = () => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                window.socket.emit('oppDraw', { oppId: userName.oppId });
-                resolve();
-            },300);
-        });
-    }
-    
-    const chooseYourOrder = async (whichOrder) => {
-        setTurnDisplay(false);
-        window.socket.emit('shuffleTheDeck', { yourId: userName.yourId });
-        window.socket.emit('shuffleTheDeck', { yourId: userName.oppId });
-        if (whichOrder) {
-            for (let i=0; i<7; i++) {
-                await draw();
-            }
-            for (let i=0; i<7; i++) {
-                await oppDraw();
-            }
-        } else {
-            for (let i=0; i<7; i++) {
-                await oppDraw();
-            }
-            for (let i=0; i<7; i++) {
-                await draw();
-            }
-        }
-        window.socket.emit('noBasic', { yourId: userName.yourId });
-        window.socket.on('getNoBasic', bool => {
-            setNoBasic(bool.basic);
-        });
-        window.socket.emit('chooseYourOrder', { 
-            yourId: userName.yourId,
-            oppId: userName.oppId,
-            yourOrder: whichOrder 
-        });
-    }
+    },[
+        setPhase, setWhichTurn, setEnergyAndTool,
+        setDeck, setHand, setSideCard, setBench, setTrash, setBattleField, 
+        setOppDeck, setOppHand, setOppSideCard, setOppBench, setOppTrash, setOppBattleField, 
+        setGallery, setSearchSort, setContentText, setHowMany, setWhichSort, setDisplayGallery
+    ]);
         
-    const mulligan = () => {
-        setNoBasic(false);
-        window.socket.emit('mulligan', { yourId: userName.yourId });
-        chooseYourOrder();
-    }
+    // const mulligan = () => {
+    //     setNoBasic(false);
+    //     window.socket.emit('mulligan', { yourId: userName.yourId });
+    //     // chooseYourOrder();
+    // }
 
     return (
         <Box style={{
@@ -151,12 +114,9 @@ const Competitive = (props) => {
             <OpponentField/>
             <Divider/>
             <UserNameContext.Provider value={userName}>
-                <YourField 
-                    chooseYourOrder={chooseYourOrder}
-                    deck = {deck}
-                />
+                <YourField deck = {deck}/>
             </UserNameContext.Provider>
-            <NoBasicDialog noBasic={noBasic} mulligan={mulligan}/>
+            {/* <NoBasicDialog noBasic={noBasic}/> */}
         </Box>
     );
 }
